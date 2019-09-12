@@ -3,8 +3,8 @@ package work.app.logger;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +18,7 @@ public class WorkLoggerController {
         workLoggerService.enter(workLogger);
     }
 
-    @PatchMapping("/log")
+    @PutMapping("/log")
     public void exit(@RequestBody WorkLogger workLogger) throws SQLException {
         workLoggerService.exit(workLogger);
     }
