@@ -31,5 +31,9 @@ build/
 ### SQL Seed ###
 **/*.sql
 
+### Hidden Files ###
+**/HiddenConstants.java
+**/application.properties
+
 ### VS Code ###
 .vscode/

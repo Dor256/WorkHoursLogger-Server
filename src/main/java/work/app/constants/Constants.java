@@ -8,4 +8,5 @@ public class Constants {
     public static String DAY = "Day";
     public static String ENTER = "Enter";
     public static String EXIT = "Exit";
+    public static String EMAIL_SUBJECT = "Work Hours for ";
 }
