@@ -1,6 +1,8 @@
 package work.app.utils;
 
-import static work.app.constants.Constants.MILLIS_TO_HOURS_DIVISOR;;
+import static work.app.constants.Constants.MILLIS_TO_HOURS_DIVISOR;
+
+import java.util.Date;;
 
 public class Utils {
     
@@ -10,5 +12,9 @@ public class Utils {
 
     public static int millisecondsToHours(long milliseconds) {
         return (int)(milliseconds / MILLIS_TO_HOURS_DIVISOR);
+    }
+
+    public static Date getDateTimeFromEpoch(long epoch) {
+        return new Date(epoch);
     }
 }
