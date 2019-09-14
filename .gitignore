@@ -28,11 +28,9 @@ target/
 /.nb-gradle/
 build/
 
-### SQL Seed ###
-# **/schema.sql
-
 ### Hidden Files ###
-
+# **/HiddenConstants.java
+# **/application.properties
 
 ### VS Code ###
 .vscode/
