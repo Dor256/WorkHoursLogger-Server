@@ -23,8 +23,8 @@ import static work.app.utils.Utils.getYear;
 import static work.app.constants.Constants.CSV_FILE_PATH;
 import static work.app.constants.Constants.DATE;
 import static work.app.constants.Constants.DAY;
-import static work.app.constants.Constants.ENTER;
-import static work.app.constants.Constants.EXIT;
+import static work.app.constants.Constants.START;
+import static work.app.constants.Constants.FINISH;
 import static work.app.constants.Constants.EMAIL_SUBJECT;
 import static work.app.constants.HiddenConstants.MY_MAIL;
 
@@ -43,7 +43,7 @@ public class WorkLoggerService {
         String monthString = getMonth(getDateTimeFromEpoch(epoch));
         String dayString = getDay(getDateTimeFromEpoch(epoch));
         int year = getYear(getDateTimeFromEpoch(epoch));
-        jdbcTemplate.update("INSERT INTO LOG(year, month, day, enter) VALUES (?, ?, ?, ?)", year, monthString,
+        jdbcTemplate.update("INSERT INTO LOG(year, month, day, start) VALUES (?, ?, ?, ?)", year, monthString,
                 dayString, epoch);
     }
 
@@ -51,7 +51,7 @@ public class WorkLoggerService {
         long epoch = workLogger.getEpoch();
         int workHours = calculateWorkHours(workLogger);
         String dayString = getDay(getDateTimeFromEpoch(epoch));
-        jdbcTemplate.update("UPDATE LOG SET exit = ?, hours = ? WHERE day = ?", epoch, workHours, dayString);
+        jdbcTemplate.update("UPDATE LOG SET finish = ?, hours = ? WHERE day = ?", epoch, workHours, dayString);
     }
 
     public void generateCSVFile(long epoch) throws IOException, MessagingException {
@@ -63,14 +63,14 @@ public class WorkLoggerService {
     }
 
     private List<WorkEntry> queryForWorkEntries(String month, int year) {
-        return jdbcTemplate.query("SELECT day, enter, exit FROM LOG WHERE month = ? AND year = ?",
+        return jdbcTemplate.query("SELECT day, start, finish FROM LOG WHERE month = ? AND year = ?",
                 new Object[]{month, year}, (resultSet, rowNum) -> new WorkEntry(resultSet.getString("day"),
-                        resultSet.getLong("enter"), resultSet.getLong("exit")));
+                        resultSet.getLong("start"), resultSet.getLong("finish")));
     }
 
     private void writeToCSVFile(List<WorkEntry> workEntries) throws IOException {
         FileWriter csvWriter = new FileWriter(CSV_FILE_PATH);
-        csvWriter.write(String.format("%s,%s,%s,%s\n", DATE, DAY, ENTER, EXIT));
+        csvWriter.write(String.format("%s,%s,%s,%s\n", DATE, DAY, START, FINISH));
         for (WorkEntry entry : workEntries) {
             csvWriter.write(String.format("%s,%s,%s,%s\n", entry.getDateForCSV(), entry.getDay(),
                     entry.getTimeStringForCSV(entry.getEnter()), entry.getTimeStringForCSV(entry.getExit())));

@@ -29,7 +29,7 @@ target/
 build/
 
 ### SQL Seed ###
-
+**/schema.sql
 
 ### Hidden Files ###
 
