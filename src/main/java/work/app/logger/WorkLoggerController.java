@@ -2,6 +2,7 @@ package work.app.logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 import javax.mail.MessagingException;
 
@@ -24,12 +25,12 @@ public class WorkLoggerController {
     }
 
     @PutMapping("/log")
-    public void exit(@RequestBody WorkLogger workLogger) throws SQLException {
+    public void exit(@RequestBody WorkLogger workLogger) throws SQLException, ParseException {
         workLoggerService.exit(workLogger);
     }
 
     @GetMapping("/log")
-    public void generateCSVFile(@RequestParam long epoch) throws IOException, MessagingException {
-        workLoggerService.generateCSVFile(epoch);
+    public void generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
+        workLoggerService.generateCSVFile(dateString);
     }
 }

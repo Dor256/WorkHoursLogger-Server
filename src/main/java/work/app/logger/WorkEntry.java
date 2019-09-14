@@ -1,46 +1,39 @@
 package work.app.logger;
 
-import java.util.Date;
-
 public class WorkEntry {
     private String day;
-    private long enter;
-    private long exit;
+    private String start;
+    private String finish;
 
     public WorkEntry(){};
 
-    public WorkEntry(String day, long enter, long exit) {
+    public WorkEntry(String day, String start, String finish) {
         this.day = day;
-        this.enter = enter;
-        this.exit = exit;
+        this.start = start;
+        this.finish = finish;
     }
 
     public String getDay() {
         return this.day;
     }
 
-    public long getEnter() {
-        return this.enter;
+    public String getStart() {
+        return this.start;
     }
 
-    public long getExit() {
-        return this.exit;
+    public String getFinish() {
+        return this.finish;
     }
 
     public String getDateForCSV() {
         StringBuilder dateBuilder = new StringBuilder();
-        Date date = new Date(this.enter);
-        String[] dateString = date.toString().split(" ");
-        dateBuilder.append(String.format("%s %s %s", dateString[2], dateString[1], dateString[5]));
+        String[] dateString = this.start.split(" ");
+        dateBuilder.append(String.format("%s %s %s", dateString[2], dateString[1], dateString[3]));
         return dateBuilder.toString();
     }
 
-    public String getTimeStringForCSV(long epoch) {
-        if(epoch == 0) {
-            return "NULL";
-        }
-        Date date = new Date(epoch);
-        String[] minuteAccurateTime = date.toString().split(" ")[3].split(":");
+    public String getTimeStringForCSV(String dateString) {
+        String[] minuteAccurateTime = dateString.split(" ")[4].split(":");
         return minuteAccurateTime[0] + ":" + minuteAccurateTime[1];
     }
 }

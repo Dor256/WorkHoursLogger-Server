@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -16,16 +19,18 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import static work.app.utils.Utils.millisecondsToHours;
-import static work.app.utils.Utils.getDateTimeFromEpoch;
 import static work.app.utils.Utils.getDay;
 import static work.app.utils.Utils.getMonth;
 import static work.app.utils.Utils.getYear;
+import static work.app.utils.Utils.getWeekDay;
+import static work.app.utils.Utils.getTime;
 import static work.app.constants.Constants.CSV_FILE_PATH;
 import static work.app.constants.Constants.DATE;
 import static work.app.constants.Constants.DAY;
 import static work.app.constants.Constants.START;
 import static work.app.constants.Constants.FINISH;
 import static work.app.constants.Constants.EMAIL_SUBJECT;
+import static work.app.constants.Constants.TIME_FORMAT;
 import static work.app.constants.HiddenConstants.MY_MAIL;
 
 @Service
@@ -35,28 +40,30 @@ public class WorkLoggerService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public WorkLoggerService() throws SQLException {
-    };
+    public WorkLoggerService() throws SQLException {};
 
     public void enter(WorkLogger workLogger) throws SQLException {
-        long epoch = workLogger.getEpoch();
-        String monthString = getMonth(getDateTimeFromEpoch(epoch));
-        String dayString = getDay(getDateTimeFromEpoch(epoch));
-        int year = getYear(getDateTimeFromEpoch(epoch));
-        jdbcTemplate.update("INSERT INTO LOG(year, month, day, start) VALUES (?, ?, ?, ?)", year, monthString,
-                dayString, epoch);
+        String dateString = workLogger.getDateString();
+        String monthString = getMonth(dateString);
+        String dayString = getDay(dateString);
+        int weekDay = getWeekDay(dateString);
+        int year = getYear(dateString);
+        jdbcTemplate.update("INSERT INTO LOG(year, month, day, weekday, start) VALUES (?, ?, ?, ?, ?)", 
+                        year, monthString, dayString, weekDay, dateString);
     }
 
-    public void exit(WorkLogger workLogger) throws SQLException {
-        long epoch = workLogger.getEpoch();
-        int workHours = calculateWorkHours(workLogger);
-        String dayString = getDay(getDateTimeFromEpoch(epoch));
-        jdbcTemplate.update("UPDATE LOG SET finish = ?, hours = ? WHERE day = ?", epoch, workHours, dayString);
+    public void exit(WorkLogger workLogger) throws SQLException, ParseException {
+        String dateString = workLogger.getDateString();
+        double workHours = Double.parseDouble(String.format("%.2f", calculateWorkHours(workLogger)));
+        int weekDay = getWeekDay(dateString);
+        String month = getMonth(dateString);
+        jdbcTemplate.update("UPDATE LOG SET finish = ?, hours = ? WHERE weekday = ? AND month = ?", 
+                        dateString, workHours, weekDay, month);
     }
 
-    public void generateCSVFile(long epoch) throws IOException, MessagingException {
-        int year = getYear(getDateTimeFromEpoch(epoch));
-        String monthString = getMonth(getDateTimeFromEpoch(epoch));
+    public void generateCSVFile(String dateString) throws IOException, MessagingException {
+        int year = getYear(dateString);
+        String monthString = getMonth(dateString);
         List<WorkEntry> workEntries = queryForWorkEntries(monthString, year);
         writeToCSVFile(workEntries);
         emailCSV(monthString);
@@ -64,8 +71,8 @@ public class WorkLoggerService {
 
     private List<WorkEntry> queryForWorkEntries(String month, int year) {
         return jdbcTemplate.query("SELECT day, start, finish FROM LOG WHERE month = ? AND year = ?",
-                new Object[]{month, year}, (resultSet, rowNum) -> new WorkEntry(resultSet.getString("day"),
-                        resultSet.getLong("start"), resultSet.getLong("finish")));
+                new Object[]{ month, year }, (resultSet, rowNum) -> new WorkEntry(resultSet.getString("day"),
+                        resultSet.getString("start"), resultSet.getString("finish")));
     }
 
     private void writeToCSVFile(List<WorkEntry> workEntries) throws IOException {
@@ -73,7 +80,7 @@ public class WorkLoggerService {
         csvWriter.write(String.format("%s,%s,%s,%s\n", DATE, DAY, START, FINISH));
         for (WorkEntry entry : workEntries) {
             csvWriter.write(String.format("%s,%s,%s,%s\n", entry.getDateForCSV(), entry.getDay(),
-                    entry.getTimeStringForCSV(entry.getEnter()), entry.getTimeStringForCSV(entry.getExit())));
+                    entry.getTimeStringForCSV(entry.getStart()), entry.getTimeStringForCSV(entry.getFinish())));
         }
         csvWriter.close();
     }
@@ -89,10 +96,15 @@ public class WorkLoggerService {
         emailSender.send(emailMessage);
     }
 
-    private int calculateWorkHours(WorkLogger workLogger) throws SQLException {
-        long exitTime = workLogger.getEpoch();
-        String dayString = getDay(getDateTimeFromEpoch(exitTime));
-        Long enterTime = jdbcTemplate.queryForObject("SELECT start FROM LOG WHERE day = ?", new Object[]{dayString}, Long.class);
-        return millisecondsToHours(exitTime - enterTime);
+    private double calculateWorkHours(WorkLogger workLogger) throws SQLException, ParseException {
+        String exitString = workLogger.getDateString();
+        int weekDay = getWeekDay(exitString);
+        String month = getMonth(exitString);
+        String enterString = jdbcTemplate.queryForObject("SELECT start FROM LOG WHERE weekday = ? AND month = ?", 
+                                                            new Object[]{weekDay, month}, String.class);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+        Date enterDate = dateFormat.parse(getTime(enterString));
+        Date exitDate = dateFormat.parse(getTime(exitString));
+        return millisecondsToHours(exitDate.getTime() - enterDate.getTime());
     }
 }

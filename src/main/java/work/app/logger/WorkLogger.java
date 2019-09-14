@@ -1,11 +1,11 @@
 package work.app.logger;
 
 public class WorkLogger {
-    private long epoch;
+    private String dateString;
 
     public WorkLogger() {}
 
-    public long getEpoch() {
-        return this.epoch;
+    public String getDateString() {
+        return this.dateString;
     }
 }
