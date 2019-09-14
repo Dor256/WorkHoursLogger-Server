@@ -1,0 +1,1 @@
+CREATE TABLE LOG(Year INT, Month VARCHAR(50), Day VARCHAR(50), Start BIGINT, Finish BIGINT, Hours INT)
