@@ -22,14 +22,14 @@ public class Utils {
     public static Date getDateTimeFromEpoch(long epoch) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+3:00"));
-        calendar.setTimeInMillis(epoch);
+        // calendar.setTimeInMillis(epoch);
         return calendar.getTime();
     }
 
     public static String getMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+3:00"));
-        calendar.setTime(date);
+        // calendar.setTime(date);
         Month month = Month.of(calendar.get(Calendar.MONTH) + 1);
         return capitalize(month.toString());
     }
@@ -37,7 +37,7 @@ public class Utils {
     public static String getDay(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+3:00"));
-        calendar.setTime(date);
+        // calendar.setTime(date);
         int numericalDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         numericalDayOfWeek = numericalDayOfWeek == 0 ? SATURDAY : numericalDayOfWeek;
         DayOfWeek day = DayOfWeek.of(numericalDayOfWeek);
@@ -47,7 +47,7 @@ public class Utils {
     public static int getYear(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+3:00"));
-        calendar.setTime(date);
+        // calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
         return year;
     }
