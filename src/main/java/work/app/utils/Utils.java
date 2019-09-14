@@ -6,7 +6,8 @@ import static work.app.constants.Constants.SATURDAY;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.util.Calendar;
-import java.util.Date;;
+import java.util.Date;
+import java.util.TimeZone;;
 
 public class Utils {
     
@@ -19,11 +20,15 @@ public class Utils {
     }
 
     public static Date getDateTimeFromEpoch(long epoch) {
-        return new Date(epoch);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Israel"));
+        calendar.setTimeInMillis(epoch);
+        return calendar.getTime();
     }
 
     public static String getMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Israel"));
         calendar.setTime(date);
         Month month = Month.of(calendar.get(Calendar.MONTH) + 1);
         return capitalize(month.toString());
@@ -31,6 +36,7 @@ public class Utils {
 
     public static String getDay(Date date) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Israel"));
         calendar.setTime(date);
         int numericalDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         numericalDayOfWeek = numericalDayOfWeek == 0 ? SATURDAY : numericalDayOfWeek;
@@ -40,6 +46,7 @@ public class Utils {
 
     public static int getYear(Date date) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Israel"));
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
         return year;

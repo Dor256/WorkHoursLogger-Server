@@ -36,6 +36,9 @@ public class WorkEntry {
     }
 
     public String getTimeStringForCSV(long epoch) {
+        if(epoch == 0) {
+            return "NULL";
+        }
         Date date = new Date(epoch);
         String[] minuteAccurateTime = date.toString().split(" ")[3].split(":");
         return minuteAccurateTime[0] + ":" + minuteAccurateTime[1];
