@@ -92,7 +92,7 @@ public class WorkLoggerService {
     private int calculateWorkHours(WorkLogger workLogger) throws SQLException {
         long exitTime = workLogger.getEpoch();
         String dayString = getDay(getDateTimeFromEpoch(exitTime));
-        Long enterTime = jdbcTemplate.queryForObject("SELECT enter FROM LOG WHERE day = ?", new Object[]{dayString}, Long.class);
+        Long enterTime = jdbcTemplate.queryForObject("SELECT start FROM LOG WHERE day = ?", new Object[]{dayString}, Long.class);
         return millisecondsToHours(exitTime - enterTime);
     }
 }
