@@ -18,6 +18,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import work.app.calendar.Month;
+
 import static work.app.utils.Utils.millisecondsToHours;
 import static work.app.utils.Utils.getDay;
 import static work.app.utils.Utils.getMonth;
@@ -31,6 +33,7 @@ import static work.app.constants.Constants.START;
 import static work.app.constants.Constants.FINISH;
 import static work.app.constants.Constants.EMAIL_SUBJECT;
 import static work.app.constants.Constants.TIME_FORMAT;
+import static work.app.constants.Constants.END_OF_MONTH;
 import static work.app.constants.HiddenConstants.MY_MAIL;
 
 @Service
@@ -63,16 +66,17 @@ public class WorkLoggerService {
 
     public void generateCSVFile(String dateString) throws IOException, MessagingException {
         int year = getYear(dateString);
-        String monthString = getMonth(dateString);
-        List<WorkEntry> workEntries = queryForWorkEntries(monthString, year);
+        Month month = Month.valueOf(getMonth(dateString).toUpperCase());
+        List<WorkEntry> workEntries = queryForWorkEntries(month, year);
         writeToCSVFile(workEntries);
-        emailCSV(monthString);
+        emailCSV(month.toString());
     }
 
-    private List<WorkEntry> queryForWorkEntries(String month, int year) {
-        return jdbcTemplate.query("SELECT day, start, finish FROM LOG WHERE month = ? AND year = ?",
-                new Object[]{ month, year }, (resultSet, rowNum) -> new WorkEntry(resultSet.getString("day"),
-                        resultSet.getString("start"), resultSet.getString("finish")));
+    private List<WorkEntry> queryForWorkEntries(Month month, int year) {
+        Month previousMonth = Month.getPreviousMonth(month);
+        return jdbcTemplate.query("SELECT day, start, finish FROM LOG WHERE (month = ? AND weekday <= ?) OR (month = ? AND weekday > ?) AND year = ?",
+                new Object[]{ month.toString(), END_OF_MONTH, previousMonth.toString(), END_OF_MONTH,year }, 
+                (resultSet, rowNum) -> new WorkEntry(resultSet.getString("day"), resultSet.getString("start"), resultSet.getString("finish")));
     }
 
     private void writeToCSVFile(List<WorkEntry> workEntries) throws IOException {

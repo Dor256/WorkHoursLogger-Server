@@ -11,6 +11,7 @@ public enum Month {
     JULY("Jul", "July"),
     AUGUST("Aug", "August"),
     SEPTEMBER("Sep", "September"),
+    OCTOBER("Oct", "October"),
     NOVEMBER("Nov", "November"),
     DECEMBER("Dec", "December");
 
@@ -29,5 +30,41 @@ public enum Month {
            }
        }
        return abbreviation;
+    }
+
+    public static Month getPreviousMonth(Month month) {
+        switch(month) {
+            case JANUARY:
+                return DECEMBER;
+            case FEBUARY:
+                return JANUARY;
+            case MARCH:
+                return FEBUARY;
+            case APRIL:
+                return MARCH;
+            case MAY:
+                return APRIL;
+            case JUNE:
+                return MAY;
+            case JULY:
+                return JUNE;
+            case AUGUST:
+                return JULY;
+            case SEPTEMBER:
+                return AUGUST;
+            case OCTOBER:
+                return SEPTEMBER;
+            case NOVEMBER:
+                return OCTOBER;
+            case DECEMBER:
+                return NOVEMBER;
+            default:
+                return month;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.fullName;
     }
 }
