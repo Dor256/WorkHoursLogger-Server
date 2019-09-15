@@ -40,7 +40,9 @@ public class WorkLoggerService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public WorkLoggerService() throws SQLException {};
+    public WorkLoggerService() throws SQLException {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS LOG(Year INT, Month VARCHAR(50), Weekday INT, Day VARCHAR(50), Start VARCHAR(100), Finish VARCHAR(100), Hours FLOAT)");
+    };
 
     public void enter(WorkLogger workLogger) throws SQLException {
         String dateString = workLogger.getDateString();
