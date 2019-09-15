@@ -19,6 +19,11 @@ public class WorkLoggerController {
     @Autowired
     private WorkLoggerService workLoggerService;
 
+    @GetMapping("/")
+    public void connect() {
+        workLoggerService.connect();
+    }
+
     @PostMapping("/log")
     public void enter(@RequestBody WorkLogger workLogger) throws SQLException {
         workLoggerService.enter(workLogger);

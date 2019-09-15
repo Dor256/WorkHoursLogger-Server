@@ -42,6 +42,10 @@ public class WorkLoggerService {
 
     public WorkLoggerService() throws SQLException {};
 
+    public void connect() {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS LOG(Year INT, Month VARCHAR(50), Weekday INT, Day VARCHAR(50), Start VARCHAR(100), Finish VARCHAR(100), Hours FLOAT)");
+    }
+
     public void enter(WorkLogger workLogger) throws SQLException {
         String dateString = workLogger.getDateString();
         String monthString = getMonth(dateString);
