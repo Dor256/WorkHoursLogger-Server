@@ -18,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import work.app.calendar.Day;
 import work.app.calendar.Month;
 
 import static work.app.utils.Utils.millisecondsToHours;
@@ -47,26 +48,26 @@ public class WorkLoggerService {
 
     public void enter(WorkLogger workLogger) throws SQLException {
         String dateString = workLogger.getDateString();
-        String monthString = getMonth(dateString);
-        String dayString = getDay(dateString);
+        Month month = getMonth(dateString);
+        Day day = getDay(dateString);
         int weekDay = getWeekDay(dateString);
         int year = getYear(dateString);
         jdbcTemplate.update("INSERT INTO LOG(year, month, day, weekday, start) VALUES (?, ?, ?, ?, ?)", 
-                        year, monthString, dayString, weekDay, dateString);
+                        year, month.toString(), day.toString(), weekDay, dateString);
     }
 
     public void exit(WorkLogger workLogger) throws SQLException, ParseException {
         String dateString = workLogger.getDateString();
         double workHours = Double.parseDouble(String.format("%.2f", calculateWorkHours(workLogger)));
         int weekDay = getWeekDay(dateString);
-        String month = getMonth(dateString);
+        Month month = getMonth(dateString);
         jdbcTemplate.update("UPDATE LOG SET finish = ?, hours = ? WHERE weekday = ? AND month = ?", 
-                        dateString, workHours, weekDay, month);
+                        dateString, workHours, weekDay, month.toString());
     }
 
     public void generateCSVFile(String dateString) throws IOException, MessagingException {
         int year = getYear(dateString);
-        Month month = Month.valueOf(getMonth(dateString).toUpperCase());
+        Month month = getMonth(dateString);
         List<WorkEntry> workEntries = queryForWorkEntries(month, year);
         writeToCSVFile(workEntries);
         emailCSV(month.toString());
@@ -103,9 +104,9 @@ public class WorkLoggerService {
     private double calculateWorkHours(WorkLogger workLogger) throws SQLException, ParseException {
         String exitString = workLogger.getDateString();
         int weekDay = getWeekDay(exitString);
-        String month = getMonth(exitString);
+        Month month = getMonth(exitString);
         String enterString = jdbcTemplate.queryForObject("SELECT start FROM LOG WHERE weekday = ? AND month = ?", 
-                                                            new Object[]{weekDay, month}, String.class);
+                                                            new Object[]{weekDay, month.toString()}, String.class);
         SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
         Date enterDate = dateFormat.parse(getTime(enterString));
         Date exitDate = dateFormat.parse(getTime(exitString));

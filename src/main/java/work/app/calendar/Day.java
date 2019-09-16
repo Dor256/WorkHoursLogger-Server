@@ -26,4 +26,9 @@ public enum Day {
        }
        return abbreviation;
     }
+
+    @Override
+    public String toString() {
+        return this.fullName;
+    }
 }

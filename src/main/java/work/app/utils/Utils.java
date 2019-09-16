@@ -21,9 +21,9 @@ public class Utils {
         return year;
     }
 
-    public static String getMonth(String dateString) {
+    public static Month getMonth(String dateString) {
         String month = dateString.split(" ")[1];
-        return capitalize(Month.getFullName(month));
+        return Month.valueOf(Month.getFullName(capitalize(month)).toUpperCase());
     }
 
     public static int getWeekDay(String dateString) {
@@ -31,9 +31,9 @@ public class Utils {
         return weekDay;
     }
 
-    public static String getDay(String dateString) {
+    public static Day getDay(String dateString) {
         String day = dateString.split(" ")[0];
-        return capitalize(Day.getFullName(day));
+        return Day.valueOf(Day.getFullName(capitalize(day)).toUpperCase());
     }
 
     public static String getTime(String dateString) {
