@@ -2,7 +2,7 @@
 
 ## The home page of the Web App: ##
 
-![alt text] (https://github.com/Dor256/WorkHoursLogger/tree/master/src/main/resources/static/UI.jpg)
+![Image description](https://github.com/Dor256/WorkHoursLogger/tree/master/src/main/resources/static/UI.jpg)
 
 ### Enter ###
 Sends current time to the server to save entry time
