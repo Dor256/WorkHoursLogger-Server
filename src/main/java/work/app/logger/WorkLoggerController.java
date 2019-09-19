@@ -1,7 +1,6 @@
 package work.app.logger;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 
 import javax.mail.MessagingException;
@@ -22,12 +21,12 @@ public class WorkLoggerController {
     private WorkLoggerService workLoggerService;
 
     @PostMapping("/log")
-    public void enter(@RequestBody WorkLogger workLogger) throws SQLException {
+    public void enter(@RequestBody WorkLogger workLogger) {
         workLoggerService.enter(workLogger);
     }
 
     @PutMapping("/log")
-    public void exit(@RequestBody WorkLogger workLogger) throws SQLException, ParseException {
+    public void exit(@RequestBody WorkLogger workLogger) throws ParseException {
         workLoggerService.exit(workLogger);
     }
 
