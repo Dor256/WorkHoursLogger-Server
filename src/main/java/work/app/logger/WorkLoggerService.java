@@ -60,12 +60,16 @@ public class WorkLoggerService {
         workLoggerRepository.updateExit(dateString, workHours, weekDay, month);
     }
 
-    public void generateCSVFile(String dateString) throws IOException, MessagingException {
+    public boolean generateCSVFile(String dateString) throws IOException, MessagingException {
         int year = getYear(dateString);
         Month month = getMonth(dateString);
         List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year);
+        if(workEntries.isEmpty()) {
+            return false;
+        }
         writeToCSVFile(workEntries);
         emailCSV(month.toString());
+        return true;
     }
 
     private void writeToCSVFile(List<WorkEntry> workEntries) throws IOException {

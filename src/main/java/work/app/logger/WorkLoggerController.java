@@ -31,7 +31,7 @@ public class WorkLoggerController {
     }
 
     @GetMapping("/log")
-    public void generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
-        workLoggerService.generateCSVFile(dateString);
+    public boolean generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
+        return workLoggerService.generateCSVFile(dateString);
     }
 }
