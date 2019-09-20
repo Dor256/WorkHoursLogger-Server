@@ -29,9 +29,9 @@ target/
 build/
 
 ### Hidden Files ###
-# **/HiddenConstants.java
-# **/application.properties
-# **/js
+**/HiddenConstants.java
+**/application.properties
+**/js
 
 ### VS Code ###
 .vscode/
