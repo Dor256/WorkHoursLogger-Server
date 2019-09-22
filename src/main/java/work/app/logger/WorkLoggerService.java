@@ -89,7 +89,7 @@ public class WorkLoggerService {
         mimeHelper.setSubject(EMAIL_SUBJECT + monthToLog);
         mimeHelper.setText(EMAIL_SUBJECT + monthToLog);
         File csvFile = new File(CSV_FILE_PATH);
-        mimeHelper.addAttachment("Work Hours", csvFile);
+        mimeHelper.addAttachment("Work Hours.csv", csvFile);
         emailSender.send(emailMessage);
     }
 
