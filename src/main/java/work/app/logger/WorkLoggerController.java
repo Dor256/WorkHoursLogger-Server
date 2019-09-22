@@ -30,8 +30,13 @@ public class WorkLoggerController {
         workLoggerService.exit(workLogger);
     }
 
+    @GetMapping("/")
+    public boolean checkIfInOffice(@RequestParam String dateString) {
+        return workLoggerService.checkIfInOffice(dateString);
+    }
+
     @GetMapping("/log")
-    public boolean generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
-        return workLoggerService.generateCSVFile(dateString);
+    public void generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
+        workLoggerService.generateCSVFile(dateString);
     }
 }
