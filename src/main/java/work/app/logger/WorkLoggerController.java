@@ -30,7 +30,7 @@ public class WorkLoggerController {
         workLoggerService.exit(workLogger);
     }
 
-    @GetMapping("/")
+    @GetMapping("/check")
     public boolean checkIfInOffice(@RequestParam String dateString) {
         return workLoggerService.checkIfInOffice(dateString);
     }
