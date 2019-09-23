@@ -46,14 +46,14 @@ public class WorkLoggerService {
 
     public void enter(WorkLogger workLogger) {
         String dateString = workLogger.getDateString();
+        Month month = getMonth(dateString);
+        Day day = getDay(dateString);
+        int weekDay = getWeekDay(dateString);
+        int year = getYear(dateString);
         try {
-            workLoggerRepository.getEntryByStartTime(dateString);
+            workLoggerRepository.getEntryByDate(weekDay, month, year);
         } catch(EmptyResultDataAccessException exception) {
             System.out.println("WTF");
-            Month month = getMonth(dateString);
-            Day day = getDay(dateString);
-            int weekDay = getWeekDay(dateString);
-            int year = getYear(dateString);
             workLoggerRepository.insertEntry(year, month, day, weekDay, dateString);
         }
     }

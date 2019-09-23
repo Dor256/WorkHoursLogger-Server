@@ -45,10 +45,10 @@ public class WorkLoggerRepository {
             (resultSet, rowNum) ->  new WorkEntry(resultSet.getString("day"), resultSet.getString("start"), resultSet.getString("finish")));
     }
 
-    public WorkEntry getEntryByStartTime(String dateString) {
+    public WorkEntry getEntryByDate(int weekDay, Month month, int year) {
         return jdbcTemplate.queryForObject(
-                    "SELECT day, start, finish FROM LOG WHERE start = ?", 
-                    new Object[]{ dateString },
+                    "SELECT day, start, finish FROM LOG WHERE weekday = ?, month = ?, year = ?", 
+                    new Object[]{ weekDay, month.toString(), year },
                     WorkEntry.class
                 );
     }
