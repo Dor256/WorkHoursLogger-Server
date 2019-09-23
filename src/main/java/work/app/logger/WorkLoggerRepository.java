@@ -44,4 +44,12 @@ public class WorkLoggerRepository {
             new Object[]{ month.toString(), END_OF_MONTH, previousMonth.toString(), END_OF_MONTH, year }, 
             (resultSet, rowNum) ->  new WorkEntry(resultSet.getString("day"), resultSet.getString("start"), resultSet.getString("finish")));
     }
+
+    public WorkEntry getEntryByStartTime(String dateString) {
+        return jdbcTemplate.queryForObject(
+                    "SELECT day, start, finish FROM LOG WHERE start = ?", 
+                    new Object[]{ dateString },
+                    WorkEntry.class
+                );
+    }
 }

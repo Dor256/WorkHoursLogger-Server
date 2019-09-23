@@ -45,11 +45,14 @@ public class WorkLoggerService {
 
     public void enter(WorkLogger workLogger) {
         String dateString = workLogger.getDateString();
-        Month month = getMonth(dateString);
-        Day day = getDay(dateString);
-        int weekDay = getWeekDay(dateString);
-        int year = getYear(dateString);
-        workLoggerRepository.insertEntry(year, month, day, weekDay, dateString);
+        WorkEntry workEntry = workLoggerRepository.getEntryByStartTime(dateString);
+        if(workEntry != null) {
+            Month month = getMonth(dateString);
+            Day day = getDay(dateString);
+            int weekDay = getWeekDay(dateString);
+            int year = getYear(dateString);
+            workLoggerRepository.insertEntry(year, month, day, weekDay, dateString);
+        }
     }
 
     public void exit(WorkLogger workLogger) throws ParseException {
