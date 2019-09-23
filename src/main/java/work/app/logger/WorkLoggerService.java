@@ -45,7 +45,6 @@ public class WorkLoggerService {
     public WorkLoggerService() {};
 
     public void enter(WorkLogger workLogger) {
-        System.out.println("WTF");
         String dateString = workLogger.getDateString();
         Month month = getMonth(dateString);
         Day day = getDay(dateString);
