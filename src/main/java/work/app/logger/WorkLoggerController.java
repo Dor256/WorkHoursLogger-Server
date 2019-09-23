@@ -22,7 +22,6 @@ public class WorkLoggerController {
 
     @PostMapping("/log")
     public void enter(@RequestBody WorkLogger workLogger) {
-        System.out.println("WTF");
         workLoggerService.enter(workLogger);
     }
 

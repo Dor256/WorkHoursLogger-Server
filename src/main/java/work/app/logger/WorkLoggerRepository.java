@@ -47,7 +47,7 @@ public class WorkLoggerRepository {
 
     public WorkEntry getEntryByDate(int weekDay, Month month, int year) {
         return jdbcTemplate.queryForObject(
-                    "SELECT day, start, finish FROM LOG WHERE weekday = ?, month = ?, year = ?", 
+                    "SELECT day, start, finish FROM LOG WHERE weekday = ? AND month = ? AND year = ?", 
                     new Object[]{ weekDay, month.toString(), year },
                     WorkEntry.class
                 );
