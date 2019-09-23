@@ -50,10 +50,10 @@ public class WorkLoggerService {
         Day day = getDay(dateString);
         int weekDay = getWeekDay(dateString);
         int year = getYear(dateString);
+        System.out.println("WTF");
         try {
             workLoggerRepository.getEntryByDate(weekDay, month, year);
         } catch(EmptyResultDataAccessException exception) {
-            System.out.println("WTF");
             workLoggerRepository.insertEntry(year, month, day, weekDay, dateString);
         }
     }
