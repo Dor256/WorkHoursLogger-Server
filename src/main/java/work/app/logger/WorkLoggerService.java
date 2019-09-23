@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -45,8 +46,9 @@ public class WorkLoggerService {
 
     public void enter(WorkLogger workLogger) {
         String dateString = workLogger.getDateString();
-        WorkEntry workEntry = workLoggerRepository.getEntryByStartTime(dateString);
-        if(workEntry != null) {
+        try {
+            workLoggerRepository.getEntryByStartTime(dateString);
+        } catch(EmptyResultDataAccessException exception) {
             Month month = getMonth(dateString);
             Day day = getDay(dateString);
             int weekDay = getWeekDay(dateString);
