@@ -64,6 +64,7 @@ public class WorkLoggerService {
         int year = getYear(dateString);
         Month month = getMonth(dateString);
         List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year);
+        System.out.println(workEntries.isEmpty());
         if(workEntries.isEmpty()) {
             return false;
         }
