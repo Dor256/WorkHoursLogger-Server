@@ -49,6 +49,7 @@ public class WorkLoggerService {
         try {
             workLoggerRepository.getEntryByStartTime(dateString);
         } catch(EmptyResultDataAccessException exception) {
+            System.out.println("WTF");
             Month month = getMonth(dateString);
             Day day = getDay(dateString);
             int weekDay = getWeekDay(dateString);
