@@ -33,7 +33,8 @@ public class WorkLoggerRepository {
     public String getSingleEntryDate(int weekDay, Month month) {
         return jdbcTemplate.queryForObject(
                     "SELECT start FROM LOG WHERE weekday = ? AND month = ?", 
-                    new Object[]{weekDay, month.toString()}, String.class
+                    new Object[]{weekDay, month.toString()}, 
+                    String.class
                 );
     }
 

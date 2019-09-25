@@ -72,7 +72,7 @@ public class WorkLoggerService {
         if(workEntries.isEmpty()) {
             return false;
         }
-        if (workEntries.get(workEntries.size() - 1).getFinish() != null) {
+        if(workEntries.get(workEntries.size() - 1).getFinish() != null) {
             return false;
         }
         return true;
