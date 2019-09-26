@@ -31,8 +31,8 @@ public class WorkLoggerController {
     }
 
     @GetMapping("/check")
-    public boolean checkIfInOffice(@RequestParam String dateString) {
-        return workLoggerService.checkIfInOffice(dateString);
+    public boolean checkIfInOffice() {
+        return workLoggerService.checkIfInOffice();
     }
 
     @GetMapping("/log")

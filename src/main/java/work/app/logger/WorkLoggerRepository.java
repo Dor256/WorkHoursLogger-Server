@@ -18,15 +18,15 @@ public class WorkLoggerRepository {
 
     public void insertEntry(int year, Month month, Day day, int weekDay, String dateString) {
         jdbcTemplate.update(
-            "INSERT INTO LOG(year, month, day, weekday, start) VALUES (?, ?, ?, ?, ?)", 
-            year, month.toString(), day.toString(), weekDay, dateString
+            "INSERT INTO LOG(year, month, day, weekday, start, inside) VALUES (?, ?, ?, ?, ?, ?)", 
+            year, month.toString(), day.toString(), weekDay, dateString, true
         );
     }
 
     public void updateExit(String dateString, double workHours, int weekDay, Month month) {
         jdbcTemplate.update(
-            "UPDATE LOG SET finish = ?, hours = ? WHERE weekday = ? AND month = ?", 
-            dateString, workHours, weekDay, month.toString()
+            "UPDATE LOG SET finish = ?, hours = ?, inside = ? WHERE weekday = ? AND month = ? AND inside = ?", 
+            dateString, workHours, false, weekDay, month.toString(), true
         );
     }
 
@@ -52,5 +52,13 @@ public class WorkLoggerRepository {
                     new Object[]{ weekDay, month.toString(), year },
                     WorkEntry.class
                 );
+    }
+
+    public boolean isInside() {
+        return jdbcTemplate.queryForObject(
+                        "SELECT inside FROM LOG WHERE inside = ?",
+                        new Object[]{ true },
+                        Boolean.class
+                    );
     }
 }

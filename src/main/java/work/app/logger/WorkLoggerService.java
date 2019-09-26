@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -65,18 +66,12 @@ public class WorkLoggerService {
         workLoggerRepository.updateExit(dateString, workHours, weekDay, month);
     }
 
-    public boolean checkIfInOffice(String dateString) {
-        int year = getYear(dateString);
-        Month month = getMonth(dateString);
-        List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year);
-        if(workEntries.isEmpty()) {
+    public boolean checkIfInOffice() {
+        try {
+            return workLoggerRepository.isInside();
+        } catch(IncorrectResultSizeDataAccessException exception) {
             return false;
         }
-        if(workEntries.get(workEntries.size() - 1).getFinish() != null) {
-            System.out.println(workEntries.get(workEntries.size()).getFinish());
-            return false;
-        }
-        return true;
     }
 
     public void generateCSVFile(String dateString) throws IOException, MessagingException {

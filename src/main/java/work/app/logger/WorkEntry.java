@@ -1,5 +1,6 @@
 package work.app.logger;
 
+
 public class WorkEntry {
     private String day;
     private String start;
