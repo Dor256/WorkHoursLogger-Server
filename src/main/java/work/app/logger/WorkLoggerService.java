@@ -73,7 +73,7 @@ public class WorkLoggerService {
             return false;
         }
         if(workEntries.get(workEntries.size() - 1).getFinish() != null) {
-            System.out.println(workEntries.get(workEntries.size() - 1).getFinish());
+            System.out.println(workEntries.get(workEntries.size()).getFinish());
             return false;
         }
         return true;
