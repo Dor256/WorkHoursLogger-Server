@@ -47,37 +47,41 @@ public class WorkLoggerService {
 
     public void enter(WorkLogger workLogger) {
         String dateString = workLogger.getDateString();
+        String userEmail = workLogger.getUserEmail();
         Month month = getMonth(dateString);
         Day day = getDay(dateString);
         int weekDay = getWeekDay(dateString);
         int year = getYear(dateString);
         try {
-            workLoggerRepository.getEntryByDate(weekDay, month, year);
+            workLoggerRepository.getEntryByDate(weekDay, month, year, userEmail);
         } catch(EmptyResultDataAccessException exception) {
-            workLoggerRepository.insertEntry(year, month, day, weekDay, dateString);
+            workLoggerRepository.insertEntry(year, month, day, weekDay, dateString, userEmail);
         }
     }
 
     public void exit(WorkLogger workLogger) throws ParseException {
         String dateString = workLogger.getDateString();
+        String userEmail = workLogger.getUserEmail();
         double workHours = Double.parseDouble(String.format("%.2f", calculateWorkHours(workLogger)));
         int weekDay = getWeekDay(dateString);
         Month month = getMonth(dateString);
-        workLoggerRepository.updateExit(dateString, workHours, weekDay, month);
+        workLoggerRepository.updateExit(dateString, workHours, weekDay, month, userEmail);
     }
 
-    public boolean checkIfInOffice() {
+    public boolean checkIfInOffice(String userEmail) {
         try {
-            return workLoggerRepository.isInside();
+            return workLoggerRepository.isInside(userEmail);
         } catch(IncorrectResultSizeDataAccessException exception) {
             return false;
         }
     }
 
-    public void generateCSVFile(String dateString) throws IOException, MessagingException {
+    public void generateCSVFile(WorkLogger workLogger) throws IOException, MessagingException {
+        String dateString = workLogger.getDateString();
+        String userEmail = workLogger.getUserEmail();
         int year = getYear(dateString);
         Month month = getMonth(dateString);
-        List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year);
+        List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year, userEmail);
         writeToCSVFile(workEntries);
         emailCSV(month.toString());
     }
@@ -105,9 +109,10 @@ public class WorkLoggerService {
 
     private double calculateWorkHours(WorkLogger workLogger) throws ParseException {
         String exitString = workLogger.getDateString();
+        String userEmail = workLogger.getUserEmail();
         int weekDay = getWeekDay(exitString);
         Month month = getMonth(exitString);
-        String enterString = workLoggerRepository.getSingleEntryDate(weekDay, month);
+        String enterString = workLoggerRepository.getSingleEntryDate(weekDay, month, userEmail);
         SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
         Date enterDate = dateFormat.parse(getTime(enterString));
         Date exitDate = dateFormat.parse(getTime(exitString));

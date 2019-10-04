@@ -10,4 +10,5 @@ public class Constants {
     public static String START = "Start";
     public static String FINISH = "Finish";
     public static String EMAIL_SUBJECT = "Work Hours for ";
+    public static String VALID_EMAIL_DOMAIN = "techsee.me";
 }

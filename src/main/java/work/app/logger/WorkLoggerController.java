@@ -6,13 +6,13 @@ import java.text.ParseException;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -30,13 +30,16 @@ public class WorkLoggerController {
         workLoggerService.exit(workLogger);
     }
 
-    @GetMapping("/check")
-    public boolean checkIfInOffice() {
-        return workLoggerService.checkIfInOffice();
+    @PostMapping("/check")
+    public boolean checkIfInOffice(@RequestBody String userEmail) {
+        if(userEmail.split("@")[1].equals("techsee.me")){
+            return workLoggerService.checkIfInOffice(userEmail);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/log")
-    public void generateCSVFile(@RequestParam String dateString) throws IOException, MessagingException {
-        workLoggerService.generateCSVFile(dateString);
+    @PostMapping("/send")
+    public void generateCSVFile(@RequestBody WorkLogger workLogger) throws IOException, MessagingException {
+        workLoggerService.generateCSVFile(workLogger);
     }
 }

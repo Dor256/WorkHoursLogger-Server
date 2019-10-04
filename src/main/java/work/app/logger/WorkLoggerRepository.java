@@ -16,48 +16,48 @@ public class WorkLoggerRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void insertEntry(int year, Month month, Day day, int weekDay, String dateString) {
+    public void insertEntry(int year, Month month, Day day, int weekDay, String dateString, String userEmail) {
         jdbcTemplate.update(
-            "INSERT INTO LOG(year, month, day, weekday, start, inside) VALUES (?, ?, ?, ?, ?, ?)", 
-            year, month.toString(), day.toString(), weekDay, dateString, true
+            "INSERT INTO LOG(year, month, day, weekday, start, inside, user) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+            year, month.toString(), day.toString(), weekDay, dateString, true, userEmail
         );
     }
 
-    public void updateExit(String dateString, double workHours, int weekDay, Month month) {
+    public void updateExit(String dateString, double workHours, int weekDay, Month month, String userEmail) {
         jdbcTemplate.update(
-            "UPDATE LOG SET finish = ?, hours = ?, inside = ? WHERE weekday = ? AND month = ? AND inside = ?", 
-            dateString, workHours, false, weekDay, month.toString(), true
+            "UPDATE LOG SET finish = ?, hours = ?, inside = ? WHERE weekday = ? AND month = ? AND inside = ? AND user = ?", 
+            dateString, workHours, false, weekDay, month.toString(), true, userEmail
         );
     }
 
-    public String getSingleEntryDate(int weekDay, Month month) {
+    public String getSingleEntryDate(int weekDay, Month month, String userEmail) {
         return jdbcTemplate.queryForObject(
-                    "SELECT start FROM LOG WHERE weekday = ? AND month = ?", 
-                    new Object[]{weekDay, month.toString()}, 
+                    "SELECT start FROM LOG WHERE weekday = ? AND month = ? AND user = ?", 
+                    new Object[]{weekDay, month.toString(), userEmail}, 
                     String.class
                 );
     }
 
-    public List<WorkEntry> queryForWorkEntries(Month month, int year) {
+    public List<WorkEntry> queryForWorkEntries(Month month, int year, String userEmail) {
         Month previousMonth = Month.getPreviousMonth(month);
         return jdbcTemplate.query(
-            "SELECT day, start, finish FROM LOG WHERE (month = ? AND weekday <= ?) OR (month = ? AND weekday > ?) AND year = ?",
-            new Object[]{ month.toString(), END_OF_MONTH, previousMonth.toString(), END_OF_MONTH, year }, 
+            "SELECT day, start, finish FROM LOG WHERE (month = ? AND weekday <= ?) OR (month = ? AND weekday > ?) AND year = ? AND user = ?",
+            new Object[]{ month.toString(), END_OF_MONTH, previousMonth.toString(), END_OF_MONTH, year, userEmail }, 
             (resultSet, rowNum) ->  new WorkEntry(resultSet.getString("day"), resultSet.getString("start"), resultSet.getString("finish")));
     }
 
-    public WorkEntry getEntryByDate(int weekDay, Month month, int year) {
+    public WorkEntry getEntryByDate(int weekDay, Month month, int year, String userEmail) {
         return jdbcTemplate.queryForObject(
-                    "SELECT day, start, finish FROM LOG WHERE weekday = ? AND month = ? AND year = ?", 
-                    new Object[]{ weekDay, month.toString(), year },
+                    "SELECT day, start, finish FROM LOG WHERE weekday = ? AND month = ? AND year = ? AND user = ?", 
+                    new Object[]{ weekDay, month.toString(), year, userEmail },
                     WorkEntry.class
                 );
     }
 
-    public boolean isInside() {
+    public boolean isInside(String userEmail) {
         return jdbcTemplate.queryForObject(
-                        "SELECT inside FROM LOG WHERE inside = ?",
-                        new Object[]{ true },
+                        "SELECT inside FROM LOG WHERE inside = ? AND user = ?",
+                        new Object[]{ true, userEmail },
                         Boolean.class
                     );
     }

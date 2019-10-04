@@ -6,6 +6,8 @@ import static work.app.constants.Constants.MILLIS_TO_HOURS_DIVISOR;
 import work.app.calendar.Day;
 import work.app.calendar.Month;
 
+import static work.app.constants.Constants.VALID_EMAIL_DOMAIN;
+
 public class Utils {
 
     public static String capitalize(String str) {
@@ -39,5 +41,9 @@ public class Utils {
     public static String getTime(String dateString) {
         String time = dateString.split(" ")[4];
         return time;
-    }   
+    }
+    
+    public static boolean validateUserEmail(String userEmail) {
+        return userEmail.split("@")[1].equals(VALID_EMAIL_DOMAIN);
+    }
 }
