@@ -34,6 +34,7 @@ public class WorkLoggerController {
 
     @PostMapping("/check")
     public boolean checkIfInOffice(@RequestBody String userEmail) {
+        System.out.println(userEmail);
         if(validateUserEmail(userEmail)){
             return workLoggerService.checkIfInOffice(userEmail);
         }
