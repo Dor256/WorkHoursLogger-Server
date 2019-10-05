@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import static work.app.utils.Utils.validateUserEmail;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class WorkLoggerController {
@@ -32,7 +34,7 @@ public class WorkLoggerController {
 
     @PostMapping("/check")
     public boolean checkIfInOffice(@RequestBody String userEmail) {
-        if(userEmail.split("@")[1].equals("techsee.me")){
+        if(validateUserEmail(userEmail)){
             return workLoggerService.checkIfInOffice(userEmail);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
