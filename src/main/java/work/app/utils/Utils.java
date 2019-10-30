@@ -7,6 +7,7 @@ import work.app.calendar.Day;
 import work.app.calendar.Month;
 
 import static work.app.constants.Constants.VALID_EMAIL_DOMAIN;
+import static work.app.constants.Constants.ADMIN_USER;
 
 public class Utils {
 
@@ -44,6 +45,6 @@ public class Utils {
     }
     
     public static boolean validateUserEmail(String userEmail) {
-        return userEmail.split("@")[1].equals(VALID_EMAIL_DOMAIN);
+        return userEmail.split("@")[1].equals(VALID_EMAIL_DOMAIN) || userEmail.equals(ADMIN_USER);
     }
 }

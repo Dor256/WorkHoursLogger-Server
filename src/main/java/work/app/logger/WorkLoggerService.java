@@ -34,7 +34,6 @@ import static work.app.constants.Constants.START;
 import static work.app.constants.Constants.FINISH;
 import static work.app.constants.Constants.EMAIL_SUBJECT;
 import static work.app.constants.Constants.TIME_FORMAT;
-import static work.app.constants.HiddenConstants.MY_MAIL;
 
 @Service
 public class WorkLoggerService {
@@ -83,23 +82,23 @@ public class WorkLoggerService {
         Month month = getMonth(dateString);
         List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year, userEmail);
         writeToCSVFile(workEntries);
-        emailCSV(month.toString());
+        emailCSV(month.toString(), userEmail);
     }
 
     private void writeToCSVFile(List<WorkEntry> workEntries) throws IOException {
         FileWriter csvWriter = new FileWriter(CSV_FILE_PATH);
         csvWriter.write(String.format("%s,%s,%s,%s\n", DATE, DAY, START, FINISH));
         for (WorkEntry entry : workEntries) {
-            csvWriter.write(String.format("%s,%s,%s,%s\n", entry.getDateForCSV(), entry.getDay(),
-                    entry.getTimeStringForCSV(entry.getStart()), entry.getTimeStringForCSV(entry.getFinish())));
+            csvWriter.write(String.format("%s,%s,%s,%s\n", entry.getDate(), entry.getDay(),
+                        entry.getStart(), entry.getFinish()));
         }
         csvWriter.close();
     }
 
-    private void emailCSV(String monthToLog) throws MessagingException {
+    private void emailCSV(String monthToLog, String userEmail) throws MessagingException {
         MimeMessage emailMessage = emailSender.createMimeMessage();
         MimeMessageHelper mimeHelper = new MimeMessageHelper(emailMessage, true);
-        mimeHelper.setTo(MY_MAIL);
+        mimeHelper.setTo(userEmail);
         mimeHelper.setSubject(EMAIL_SUBJECT + monthToLog);
         mimeHelper.setText(EMAIL_SUBJECT + monthToLog);
         File csvFile = new File(CSV_FILE_PATH);
