@@ -2,6 +2,7 @@ package work.app.logger;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -39,6 +40,11 @@ public class WorkLoggerController {
             return workLoggerService.checkIfInOffice(userEmail);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PostMapping("/show")
+    public List<WorkEntry> showWorkEntries(@RequestBody WorkLogger workLogger) {
+        return workLoggerService.getMonthlyWorkEntries(workLogger);
     }
 
     @PostMapping("/send")

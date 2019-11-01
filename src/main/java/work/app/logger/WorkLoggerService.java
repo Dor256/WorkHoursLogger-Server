@@ -75,13 +75,20 @@ public class WorkLoggerService {
         }
     }
 
-    public void generateCSVFile(WorkLogger workLogger) throws IOException, MessagingException {
+    public List<WorkEntry> getMonthlyWorkEntries(WorkLogger workLogger) {
         String dateString = workLogger.getDateString();
         String userEmail = workLogger.getUserEmail();
         int year = getYear(dateString);
         Month month = getMonth(dateString);
-        List<WorkEntry> workEntries = workLoggerRepository.queryForWorkEntries(month, year, userEmail);
+        return workLoggerRepository.queryForWorkEntries(month, year, userEmail);
+    }
+
+    public void generateCSVFile(WorkLogger workLogger) throws IOException, MessagingException {
+        List<WorkEntry> workEntries = getMonthlyWorkEntries(workLogger);
         writeToCSVFile(workEntries);
+        String userEmail = workLogger.getUserEmail();
+        String dateString = workLogger.getDateString();
+        Month month = getMonth(dateString);
         emailCSV(month.toString(), userEmail);
     }
 
